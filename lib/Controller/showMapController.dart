@@ -5,6 +5,7 @@ import 'package:flutter_maps/components/buttonSelect.dart';
 import 'package:flutter_maps/gen/assets.gen.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 
 enum CurrentWidgetStates {
@@ -23,19 +24,41 @@ class ShowMapController extends GetxController {
       initPosition: GeoPoint(latitude: 35.652903, longitude: 51.059940));
   final geoPoints = RxList<GeoPoint>(<GeoPoint>[]);
   RxString markerIcon = Assets.icons.origin.obs;
-  RxString distance = "در حال محاسبه فاصله : ".obs;
+  RxString distance = "در حال محاسبه فاصله ...".obs;
+  RxString destinationAddrres = "آدرس مقصد ... ".obs;
+  RxString origainAddress = "آدرس مبدا ... ".obs;
   // Define a function to update the widget state when the user selects a destination
   void selectDestination() async {
     GeoPoint originGeoPoint =
         await mapController.getCurrentPositionAdvancedPositionPicker();
-    debugPrint(
-        "latitude : ${originGeoPoint.latitude} longitude : ${originGeoPoint.longitude}");
+
     geoPoints.add(originGeoPoint);
 
     currentWidgetLists.add(CurrentWidgetStates.stateSelectDestination);
     markerIcon.value = Assets.icons.destination;
 
     mapController.init();
+  }
+
+  void getAddress() async {
+    try {
+      await placemarkFromCoordinates(
+              geoPoints.first.latitude, geoPoints.first.longitude)
+          .then((List<Placemark> pList) {
+        origainAddress.value =
+            "${pList.first.street} ${pList.first.thoroughfare} ";
+      });
+
+      await placemarkFromCoordinates(
+              geoPoints.last.latitude, geoPoints.last.longitude)
+          .then((List<Placemark> pList) {
+        destinationAddrres.value =
+            "${pList.last.street} ${pList.last.thoroughfare} ";
+      });
+    } catch (e) {
+      origainAddress.value = '0';
+      destinationAddrres.value = '0';
+    }
   }
 
   void backButton() {
@@ -74,6 +97,7 @@ class ShowMapController extends GetxController {
       } else {
         distance.value = "فاصله مبدا تا مقصد ${value ~/ 1000} کیلومتر";
       }
+      getAddress();
     });
   }
 
@@ -85,18 +109,24 @@ class ShowMapController extends GetxController {
           title: "انتخاب مبدا",
           onTap: () => selectDestination(),
           distance: '0',
+          origainAddress: '0',
+          destinationAddrres: '0',
         );
       case CurrentWidgetStates.stateSelectDestination:
         return ButtonSelect(
           title: "انتخاب مقصد",
           onTap: () => requestDriver(),
           distance: '0',
+          origainAddress: '0',
+          destinationAddrres: '0',
         );
       case CurrentWidgetStates.stateRequestDriver:
         return ButtonSelect(
           title: "درخواست راننده",
           onTap: () {},
           distance: distance.value,
+          origainAddress: "مبدا : ${origainAddress.value}",
+          destinationAddrres: "مقصد : ${destinationAddrres.value}",
         );
       default:
         throw Exception('Unknown widget state!');

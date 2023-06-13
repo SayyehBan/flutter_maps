@@ -10,9 +10,13 @@ class ButtonSelect extends StatelessWidget {
     required this.title,
     required this.onTap,
     required this.distance,
+    required this.origainAddress,
+    required this.destinationAddrres,
   });
   final String title;
   final String distance;
+  final String origainAddress;
+  final String destinationAddrres;
   final GestureCancelCallback onTap;
   @override
   Widget build(BuildContext context) {
@@ -34,6 +38,44 @@ class ButtonSelect extends StatelessWidget {
                     child: Center(
                         child: Text(
                       distance,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    )),
+                  )
+                : const SizedBox(),
+            const SizedBox(
+              height: Dimens.small,
+            ),
+            origainAddress != '0'
+                ? Container(
+                    height: 58,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(Dimens.medium),
+                        color: Colors.white),
+                    child: Center(
+                        child: Text(
+                      origainAddress,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    )),
+                  )
+                : const SizedBox(),
+            const SizedBox(
+              height: Dimens.small,
+            ),
+            destinationAddrres != '0'
+                ? Container(
+                    height: 58,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(Dimens.medium),
+                        color: Colors.white),
+                    child: Center(
+                        child: Text(
+                      destinationAddrres,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     )),
                   )
                 : const SizedBox(),
