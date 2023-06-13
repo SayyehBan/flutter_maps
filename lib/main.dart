@@ -31,8 +31,8 @@ class MyApp extends StatelessWidget {
               }
             })),
       )),
-      home: const Directionality(
-          textDirection: TextDirection.rtl, child: MapScreen()),
+      home:
+          Directionality(textDirection: TextDirection.rtl, child: MapScreen()),
     );
   }
 }

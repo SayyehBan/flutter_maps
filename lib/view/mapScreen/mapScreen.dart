@@ -1,12 +1,13 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:flutter_maps/components/buttonSelect.dart';
+import 'package:flutter_maps/Controller/OperationButtonController.dart';
 import 'package:flutter_maps/components/getBackPage.dart';
+import 'package:get/get.dart';
 
 class MapScreen extends StatelessWidget {
-  const MapScreen({super.key});
-
+  MapScreen({super.key});
+  final controller = Get.put(OperationButtonController());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -16,11 +17,14 @@ class MapScreen extends StatelessWidget {
         Container(
           color: Colors.blueGrey,
         ),
-        ButtonSelect(
-          title: "انتخاب مبدا",
-          onTap: () {},
+        Obx(() => controller.currentWidget),
+        GetBackPage(
+          onPressed: () {
+            if (controller.currentWidgetLists.length > 1) {
+              controller.currentWidgetLists.removeLast();
+            }
+          },
         ),
-        const GetBackPage(),
       ]),
     ));
   }

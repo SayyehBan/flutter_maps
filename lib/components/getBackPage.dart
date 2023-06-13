@@ -2,15 +2,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_maps/utilities/dimens.dart';
-import 'package:get/get.dart';
 
 class GetBackPage extends StatelessWidget {
-  const GetBackPage({super.key});
-
+  const GetBackPage({super.key, required this.onPressed});
+  final Function() onPressed;
   @override
   Widget build(BuildContext context) {
-    return Get.previousRoute.isNotEmpty
-        ? Positioned(
+    return
+        // Get.previousRoute.isNotEmpty
+        //     ?
+        Positioned(
             top: Dimens.medium,
             right: Dimens.medium,
             child: Container(
@@ -26,13 +27,13 @@ class GetBackPage extends StatelessWidget {
                         blurRadius: 18)
                   ]),
               child: IconButton(
-                  onPressed: () {
-                    if (Get.previousRoute.isNotEmpty) {
-                      Get.back();
-                    }
-                  },
+                  onPressed: onPressed
+                  // if (Get.previousRoute.isNotEmpty) {
+                  //   Get.back();
+                  // }
+                  ,
                   icon: const Icon(Icons.arrow_back)),
-            ))
-        : const SizedBox();
+            ));
+    // : const SizedBox();
   }
 }
