@@ -43,14 +43,16 @@ class ShowMapController extends GetxController {
   void getAddress() async {
     try {
       await placemarkFromCoordinates(
-              geoPoints.first.latitude, geoPoints.first.longitude)
+              geoPoints.first.latitude, geoPoints.first.longitude,
+              localeIdentifier: "fa")
           .then((List<Placemark> pList) {
         origainAddress.value =
             "${pList.first.street} ${pList.first.thoroughfare} ";
       });
 
       await placemarkFromCoordinates(
-              geoPoints.last.latitude, geoPoints.last.longitude)
+              geoPoints.last.latitude, geoPoints.last.longitude,
+              localeIdentifier: "fa")
           .then((List<Placemark> pList) {
         destinationAddrres.value =
             "${pList.last.street} ${pList.last.thoroughfare} ";
