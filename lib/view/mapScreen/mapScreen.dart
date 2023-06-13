@@ -18,12 +18,16 @@ class MapScreen extends StatelessWidget {
           color: Colors.blueGrey,
         ),
         Obx(() => controller.currentWidget),
-        GetBackPage(
-          onPressed: () {
-            if (controller.currentWidgetLists.length > 1) {
-              controller.currentWidgetLists.removeLast();
-            }
-          },
+        Obx(
+          () => controller.currentWidgetLists.length != 1
+              ? GetBackPage(
+                  onPressed: () {
+                    if (controller.currentWidgetLists.length > 1) {
+                      controller.currentWidgetLists.removeLast();
+                    }
+                  },
+                )
+              : const SizedBox(),
         ),
       ]),
     ));
