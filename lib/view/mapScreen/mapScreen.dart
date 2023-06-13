@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_maps/Controller/showMapController.dart';
 import 'package:flutter_maps/components/getBackPage.dart';
-import 'package:flutter_maps/gen/assets.gen.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';

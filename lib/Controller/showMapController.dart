@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_maps/components/buttonSelect.dart';
 import 'package:flutter_maps/gen/assets.gen.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 enum CurrentWidgetStates {
@@ -22,7 +23,7 @@ class ShowMapController extends GetxController {
       initPosition: GeoPoint(latitude: 35.652903, longitude: 51.059940));
   final geoPoints = RxList<GeoPoint>(<GeoPoint>[]);
   RxString markerIcon = Assets.icons.origin.obs;
-
+  RxString distance = "در حال محاسبه فاصله : ".obs;
   // Define a function to update the widget state when the user selects a destination
   void selectDestination() async {
     GeoPoint originGeoPoint =
@@ -53,8 +54,27 @@ class ShowMapController extends GetxController {
   }
 
   // Define a function to update the widget state when the user requests a driver
-  void requestDriver() {
+  void requestDriver() async {
+    await mapController
+        .getCurrentPositionAdvancedPositionPicker()
+        .then((value) => geoPoints.add(value));
+    await mapController.cancelAdvancedPositionPicker();
+    await mapController.addMarker(geoPoints.first,
+        markerIcon: MarkerIcon(
+          iconWidget: SvgPicture.asset(Assets.icons.origin),
+        ));
+    await mapController.addMarker(geoPoints.last,
+        markerIcon: MarkerIcon(
+          iconWidget: SvgPicture.asset(Assets.icons.destination),
+        ));
     currentWidgetLists.add(CurrentWidgetStates.stateRequestDriver);
+    await distance2point(geoPoints.first, geoPoints.last).then((value) {
+      if (value <= 1000) {
+        distance.value = "فاصله مبدا تا مقصد ${value.toInt()} متر";
+      } else {
+        distance.value = "فاصله مبدا تا مقصد ${value ~/ 1000} کیلومتر";
+      }
+    });
   }
 
   // Define a computed property to get the current widget based on the current state
@@ -64,16 +84,19 @@ class ShowMapController extends GetxController {
         return ButtonSelect(
           title: "انتخاب مبدا",
           onTap: () => selectDestination(),
+          distance: '0',
         );
       case CurrentWidgetStates.stateSelectDestination:
         return ButtonSelect(
           title: "انتخاب مقصد",
           onTap: () => requestDriver(),
+          distance: '0',
         );
       case CurrentWidgetStates.stateRequestDriver:
         return ButtonSelect(
           title: "درخواست راننده",
           onTap: () {},
+          distance: distance.value,
         );
       default:
         throw Exception('Unknown widget state!');

@@ -9,8 +9,10 @@ class ButtonSelect extends StatelessWidget {
     super.key,
     required this.title,
     required this.onTap,
+    required this.distance,
   });
   final String title;
+  final String distance;
   final GestureCancelCallback onTap;
   @override
   Widget build(BuildContext context) {
@@ -20,12 +22,35 @@ class ButtonSelect extends StatelessWidget {
       right: 0,
       child: Padding(
         padding: const EdgeInsets.all(Dimens.large),
-        child: ElevatedButton(
-            onPressed: onTap,
-            child: Text(
-              title,
-              style: MyTextSyles.bottom,
-            )),
+        child: Column(
+          children: [
+            distance != '0'
+                ? Container(
+                    height: 58,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(Dimens.medium),
+                        color: Colors.white),
+                    child: Center(
+                        child: Text(
+                      distance,
+                    )),
+                  )
+                : const SizedBox(),
+            const SizedBox(
+              height: Dimens.small,
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                  onPressed: onTap,
+                  child: Text(
+                    title,
+                    style: MyTextSyles.bottom,
+                  )),
+            ),
+          ],
+        ),
       ),
     );
   }
