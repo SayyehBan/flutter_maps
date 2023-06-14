@@ -58,24 +58,59 @@ class ShowMapController extends GetxController {
             "${pList.last.street} ${pList.last.thoroughfare} ";
       });
     } catch (e) {
+      debugPrint(e.toString());
       origainAddress.value = '0';
       destinationAddrres.value = '0';
     }
   }
 
   void backButton() {
-    if (geoPoints.isNotEmpty) {
-      geoPoints.removeLast();
-      markerIcon.value = Assets.icons.origin;
-      mapController.init();
-    }
-    if (currentWidgetLists.length > 1) {
-      currentWidgetLists.removeLast();
-    }
+    // if (geoPoints.isNotEmpty) {
+    //   geoPoints.removeLast();
+    //   markerIcon.value = Assets.icons.origin;
+    //   mapController.init();
+    // }
+    // if (currentWidgetLists.length > 1) {
+    //   currentWidgetLists.removeLast();
+    // }
     if (currentWidgetLists.length == 1) {
       markerIcon.value = Assets.icons.origin;
+      mapController.removeMarker(geoPoints.last);
+      geoPoints.removeLast();
       mapController.init();
     }
+
+    // if (currentWidgetLists.length == 2) {
+    //   markerIcon.value = Assets.icons.destination;
+    //   // mapController.init();
+    // }
+
+    switch (currentWidgetLists.last) {
+      case CurrentWidgetStates.stateSelectOrigin:
+        break;
+
+      case CurrentWidgetStates.stateSelectDestination:
+        geoPoints.removeLast();
+        if (geoPoints.isEmpty) {
+          markerIcon.value = Assets.icons.origin;
+        } else {
+          markerIcon.value = Assets.icons.destination;
+        }
+        mapController.init();
+        break;
+
+      case CurrentWidgetStates.stateRequestDriver:
+        mapController.advancedPositionPicker();
+        mapController.removeMarker(geoPoints.last);
+        geoPoints.removeLast();
+        markerIcon.value = Assets.icons.destination;
+        mapController.init();
+        break;
+
+      default:
+        break;
+    }
+    currentWidgetLists.removeLast();
   }
 
   // Define a function to update the widget state when the user requests a driver
