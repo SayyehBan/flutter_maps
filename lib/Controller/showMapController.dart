@@ -57,6 +57,9 @@ class ShowMapController extends GetxController {
         destinationAddrres.value =
             "${pList.last.street} ${pList.last.thoroughfare} ";
       });
+      mapController.drawRoad(geoPoints.first, geoPoints.last,
+          roadOption:
+              const RoadOption(roadColor: Colors.blue, roadBorderWidth: 5));
     } catch (e) {
       debugPrint(e.toString());
       origainAddress.value = '0';
